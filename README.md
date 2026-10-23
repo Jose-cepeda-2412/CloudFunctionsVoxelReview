@@ -5,10 +5,9 @@ Backend de funciones serverless utilizado por **Voxel Review** para mantener dat
 ## Tecnologías
 
 - Node.js
-- Cloud Functions for Firebase de segunda generación
+- Cloud Functions for Firebase 
 - Cloud Firestore
 - Firebase Cloud Messaging (FCM)
-- Firebase Admin SDK
 
 ## Funciones
 
