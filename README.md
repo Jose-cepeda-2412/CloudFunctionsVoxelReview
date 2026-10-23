@@ -51,26 +51,6 @@ npm install
 cd ..
 ```
 
-Inicia sesión y selecciona el proyecto:
-
-```bash
-firebase login
-firebase use voxelreview-78caf
-```
-
-## Despliegue
-
-Desplegar todas las funciones:
-
-```bash
-firebase deploy --only functions
-```
-
-Desplegar una función específica:
-
-```bash
-firebase deploy --only functions:sendLikeNotificaction
-```
 
 ## Notificaciones push
 
