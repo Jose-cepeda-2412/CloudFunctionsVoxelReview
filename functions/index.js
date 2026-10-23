@@ -7,6 +7,7 @@ const {
 const admin = require("firebase-admin")
 //imprimir cosas en consola 
 const logger = require("firebase-functions/logger")
+const { event } = require("firebase-functions/v1/analytics")
 
 //actualizar la foto de perfil apenas la cambie en la BD (en todos los tweets de ese usuario)
 
@@ -53,3 +54,42 @@ exports.updateUserInfoInReviews = onDocumentUpdated (
     }
 )
 
+//notificacion follow
+
+exports.sendFollowNotificaction = onDocumentCreated(
+    "users/{userId}/followers/{followerId}",
+    async (event) => {
+        const { userId, followerId } = event.params;
+
+        const userDoc = await db.collection("users").doc(userId).get();
+        const userToken = userDoc.data()?.fcmtoken;
+
+        const followerDoc = await db.collection("users").doc(followerId).get();
+        const followerName = followerDoc.data()?.username || "Alguien";
+
+        if (!userToken) {
+            logger.log(`El usuario ${userId} no tiene un token FCM`);
+            return;
+        }
+
+        const message = {
+            token: userToken,
+            notification: {
+                title: "Nuevo seguidor",
+                body: `${followerName} ha comenzado a seguirte`
+            }
+        };
+
+        try {
+            await admin.messaging().send(message);
+            logger.log(
+                `Notificación enviada a ${userId} por nuevo seguidor: ${followerName}`
+            );
+        } catch (error) {
+            logger.error(
+                `Error al enviar la notificación a ${userId}:`,
+                error
+            );
+        }
+    }
+);
